@@ -33,11 +33,33 @@ When you first create or modify mappings on an ElasticMapper model, you should r
 Article.put_mapping
 ```
 
-ToDo
-----
+Indexing A Document
+-------------------
 
-* Put more tests around search.
-* Test the library out.
+When you create or update a document using the ElasticMapper mixin, simply call `index`.
+
+```ruby
+article = Article.create(title: "Hello World", doi: "doi://12354.com")
+article.index
+```
+
+Or, even easier, use the ActiveRecord `:after_save` hook:
+
+```ruby
+class Article < ActiveRecord::Base
+
+  include ElasticMapper
+
+  validates_uniqueness_of :doi
+  validates_presence_of :doi, :title
+
+  after_save :index
+
+  mapping :title, :doi, :index => :not_analyzed
+  mapping :title, :abstract
+  mapping :publication_date, :type => :date
+end
+```
 
 ## Installation
 
