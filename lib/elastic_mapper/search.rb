@@ -20,26 +20,29 @@ module ElasticMapper::Search
     # @return [ActiveModel|Array] the search results.
     def search(query, opts = {}, query_sanitized = false)
 
-      {
-        sort: { _score: 'desc' }
+      opts = {
+        sort: { _score: 'desc' },
+        # from and size, are used to paginate
+        # in ElasticSearch
+        from: 0,
+        size: 20
       }.update(opts)
+
+      # Convert string query to search DSL.
+      query_hash = if query.is_a?(String)
+        query_string_to_hash(query)
+      else
+        query
+      end
 
       # Perform the query in a try/catch block, attempt
       # to sanitize the query if it fails.
       begin
         res = ElasticMapper.index.type(
           self.instance_variable_get(:@_mapping_name)
-        ).search({ size: 12, query: {
-            "bool" => {
-              "must" => [
-                # This pattern is here for reference, it's useful
-                # when it comes time to add multi-tenant support.
-                # {"term" => {"user_id" => id}},
-                {"query_string" => {"query" => query}}
-              ]
-            }
-          }
-        }.merge(opts))
+        ).search(
+          { query: query_hash }.merge(opts)
+        )
       rescue Stretcher::RequestError => e
         # the first time a query fails, attempt to
         # sanitize the query and retry the search.
@@ -54,6 +57,24 @@ module ElasticMapper::Search
 
       ordered_results(res.results.map(&:id))
     end
+
+    # Create a query hash from a query string.
+    #
+    # @param query_string [String] the string query.
+    # @return query_hash [Hash] query hash.
+    def query_string_to_hash(query_string)
+      {
+        "bool" => {
+          "must" => [
+            # This pattern is here for reference, it's useful
+            # when it comes time to add multi-tenant support.
+            # {"term" => {"user_id" => id}},
+            { "query_string" => { "query" => query_string } }
+          ]
+        }
+      }
+    end
+    private :query_string_to_hash
 
     # Fetch a set of ActiveRecord resources, looking up
     # by the id returned by ElasticSearch. Maintain ElasticSearch's

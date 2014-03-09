@@ -1,5 +1,7 @@
-# Used to provide mapping information for an ActiveModel object,
+# Used to describe the mapping for an ActiveModel object,
 # so that it can be indexed for search:
+#
+# On The Topic of Mappings:
 #
 # http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/mapping.html
 module ElasticMapper::Mapping

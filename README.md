@@ -3,7 +3,7 @@ ElasticMapper
 
 A dead simple DSL for integrating ActiveRecord with ElasticSearch.
 
-ElasticMapper is built on top of the Stretcher library.
+ElasticMapper is built on top of the [Stretcher](https://github.com/PoseBiz/stretcher) library.
 
 Background
 ----------
@@ -15,12 +15,7 @@ Mappings indicate to ElasticSearch how the fields of a document should be indexe
 
 http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/mapping.html
 
-ElasticMapper provides a `mapper` mixin, for describing these mappings:
-
-* the mappings descriptions can be used to automatically generate a mapping for ElasticSearch:
-	* Note: the mapping only needs to be updated in ElasticSearch when it's updated or created.
-* the mapping descriptions are used by ElasticMapper to deem information about a model for indexing and search tasks. 
-
+ElasticMapper provides a `mapping` method, for describing these mappings.
 
 ```ruby
 def Article
@@ -32,10 +27,10 @@ def Article
 end
 ```
 
-When you first create a set of mappings, or modify your mappings, run:
+When you first create or modify mappings on an ElasticMapper model, you should run:
 
 ```ruby
-Article.save_mapping
+Article.put_mapping
 ```
 
 ToDo

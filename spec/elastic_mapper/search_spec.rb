@@ -45,20 +45,43 @@ describe ElasticMapper::Search do
         results.first.foo.should == 'alpha century'
       end
     end
-  end
 
-  context "sort" do
-    it "can sort in descending order" do
-      results = SearchModel.search('*', sort: { :foo => :desc })
-      results.first.foo.should == 'hello world'
-      results.second.foo.should == 'cat lover'
+    context "search by hash" do
+      it "returns documents matching the hash query" do
+        results = SearchModel.search({ "query_string" => { "query" => 'alpha' } })
+        results.count.should == 1
+        results.first.foo.should == 'alpha century'        
+      end
     end
 
-    it "can sort in ascending order" do
-      results = SearchModel.search('*', sort: { :foo => :asc })
-      results.first.foo.should == 'alpha century'
-      results.second.foo.should == 'cat lover'
+    context "sort" do
+      it "can sort in descending order" do
+        results = SearchModel.search('*', sort: { :foo => :desc })
+        results.first.foo.should == 'hello world'
+        results.second.foo.should == 'cat lover'
+      end
+
+      it "can sort in ascending order" do
+        results = SearchModel.search('*', sort: { :foo => :asc })
+        results.first.foo.should == 'alpha century'
+        results.second.foo.should == 'cat lover'
+      end
     end
+
+    context "pagination" do
+      it "allows result size to be set with size" do
+        results = SearchModel.search('* OR alpha', size: 1)
+        results.count.should == 1
+        results.first.foo.should == 'alpha century'
+      end
+
+      it "allows documents to be skipped with from" do
+        results = SearchModel.search('* OR alpha', size: 1, from: 1)
+        results.count.should == 1
+        results.first.foo.should == 'hello world'
+      end
+    end
+
   end
 
 end

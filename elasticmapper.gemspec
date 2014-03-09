@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.version       = ElasticMapper::VERSION
   spec.authors       = ["Benjamin Coe"]
   spec.email         = ["bencoe@gmail.com"]
-  spec.summary       = %q{A dead simple DSL for integrating ActiveRecord with ElasticSearch.}
+  spec.summary       = %q{A dead simple DSL for integrating ActiveModel with ElasticSearch.}
   spec.homepage      = ""
   spec.license       = "MIT"
 

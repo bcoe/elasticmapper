@@ -1,16 +1,15 @@
-# Indexes the ActiveRecord for search
-# based on the mapping provided.
+# Indexes the ActiveModel instance for search, based on
+# the mapping outlined using ElasticMapper::Mapping.
 module ElasticMapper::Index
 
-  # Using the mapping as a basis,
-  # indexes the model.
+  # Index the ActiveModel in ElasticSearch.
   def index
     mapping_name = self.class.instance_variable_get(:@_mapping_name)
 
     ElasticMapper.index.type(mapping_name).put(self.id, index_hash)
   end
 
-  # Generates a hash representation of the model
+  # Generate a hash representation of the model.
   #
   # @return [Hash] hash representation of model.
   def index_hash
