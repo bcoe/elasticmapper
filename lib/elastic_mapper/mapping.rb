@@ -8,16 +8,16 @@ module ElasticMapper::Mapping
     # Default the mapping name, to the table_name variable,
     # which will be set on ActiveRecord models.
     if base.respond_to?(:table_name)
-      base.instance_variable_set(:@_mapping_name, base.table_name)
+      base.instance_variable_set(:@_mapping_name, base.table_name.to_sym)
     end
 
     base.extend(ClassMethods)
   end
 
   module ClassMethods
-    # Populates @_mapping with information describing
+    # Populates @_mapping with properties describing
     # how the model should be indexed in ElasticSearch.
-    # The last parameter is optionally a hash, for controlling
+    # The last parameter is optionally a hash for specifying
     # indexing settings, e.g., analyzed, not_analyzed.
     #
     # @param args [*args] symbols representing fields
@@ -43,7 +43,10 @@ module ElasticMapper::Mapping
     # 
     # @return [Hash] the mapping description.
     def _mapping
-      @_mapping ||= { id: { type: "integer", index: "no" } }
+      @_mapping ||= { id: {
+        :field => :id,
+        :options => { :type => :integer, :index => :no }
+      }}
     end
     private :_mapping
 
@@ -66,12 +69,30 @@ module ElasticMapper::Mapping
     end
     private :mapping_key
 
+    # Override the default name of the mapping.
+    #
+    # @param mapping_name [String] name of mapping.
+    def mapping_name(mapping_name)
+      @_mapping_name = mapping_name.to_sym
+    end
+
     # Generates a json representation of @_mapping,
     # compatible with ElasticSearch.
     #
     # @return [Hash] mapping.
     def mapping_json
+      {
+        @_mapping_name => {
+          properties: @_mapping.inject({}) { |h, (k, v)| h[k] = v[:options]; h }
+        }
+      }
+    end
 
+    # Create the described mapping in ElasticSearch.
+    def put_mapping
+      ElasticMapper.index
+        .type(@_mapping_name)
+        .put_mapping(mapping_json)
     end
   end
 

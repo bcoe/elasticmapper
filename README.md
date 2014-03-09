@@ -1,16 +1,20 @@
 ElasticMapper
 =============
 
-A straightforward DSL for integrating ActiveModel with ElsticSearch
+A dead simple DSL for integrating ActiveRecord with ElasticSearch.
 
-Created Mappings
+Describing Mappings
 ----------------
 
-Mappings describe how the fields of a document should be indexed within the search engine:
+Mappings indicate to ElasticSearch how the fields of a document should be stored:
 
 http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/mapping.html
 
-Use the `mapping` method to describe your mappings:
+The `mapping` method is used to describe mappings with ElasticMapper:
+
+* these mappings are used to generate a mapping for the model in ElasticSearch.
+* they are also used to provide information to the search Mixin.
+
 
 ```ruby
 def Article
