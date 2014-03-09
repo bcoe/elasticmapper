@@ -16,10 +16,6 @@ describe ElasticMapper::Mapping do
   end
 
   class ModelMappingNameOverridden
-    def self.table_name
-      :models
-    end
-
     include ElasticMapper::Mapping
 
     mapping_name :overridden_name
@@ -65,9 +61,9 @@ describe ElasticMapper::Mapping do
     end
   end
 
-  describe "mapping_json" do
-    it "generates the appropriate json for the mapping" do
-      mapping = Model.mapping_json
+  describe "mapping_hash" do
+    it "generates the appropriate hash for the mapping" do
+      mapping = Model.mapping_hash
       mapping.should == { models: {
           properties: {
             id: { :type => :integer, :index => :no},
@@ -96,8 +92,7 @@ describe ElasticMapper::Mapping do
 
     it "creates the mapping in ElasticSearch" do
       Model.put_mapping
-      ElasticMapper.index.refresh
-
+      
       properties = ElasticMapper.index
         .get_mapping
         .elastic_mapper_tests

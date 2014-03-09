@@ -1,4 +1,6 @@
-require 'simplecov'
+require "ostruct"
+require "simplecov"
+require "active_hash"
 
 SimpleCov.start do
   add_filter "/spec/"
@@ -45,4 +47,12 @@ def reset_index
     sleep 0.1
   end
 
+end
+
+# Index the model provided,
+# and refresh the index so that the
+# document can be searched.
+def index(model)
+  model.index
+  ElasticMapper.index.refresh
 end

@@ -2,6 +2,8 @@ require "stretcher"
 require "active_support/core_ext"
 require "elastic_mapper/version"
 require "elastic_mapper/mapping"
+require "elastic_mapper/index"
+require "elastic_mapper/search"
 
 module ElasticMapper
 
@@ -50,5 +52,7 @@ module ElasticMapper
   # simply including the root module.
   def self.included(base)
     base.send(:include, ElasticMapper::Mapping)
+    base.send(:include, ElasticMapper::Index)
+    base.send(:include, ElasticMapper::Search)
   end
 end

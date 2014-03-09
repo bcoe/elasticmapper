@@ -1,12 +1,12 @@
-# This mixin adds functionality to ActiveRecord
-# models, related to generating mappings for ElasticSearch.
+# Used to provide mapping information for an ActiveModel object,
+# so that it can be indexed for search:
 #
 # http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/mapping.html
 module ElasticMapper::Mapping
 
   def self.included(base)
-    # Default the mapping name, to the table_name variable,
-    # which will be set on ActiveRecord models.
+    # Default the mapping name, to the table_name variable.
+    # this will be set for ActiveRecord models.
     if base.respond_to?(:table_name)
       base.instance_variable_set(:@_mapping_name, base.table_name.to_sym)
     end
@@ -17,11 +17,11 @@ module ElasticMapper::Mapping
   module ClassMethods
     # Populates @_mapping with properties describing
     # how the model should be indexed in ElasticSearch.
-    # The last parameter is optionally a hash for specifying
-    # indexing settings, e.g., analyzed, not_analyzed.
+    # The last parameter is optionally a hash specifying
+    # index settings, e.g., analyzed, not_analyzed.
     #
-    # @param args [*args] symbols representing fields
-    #    on your model.
+    # @param args [*args] symbols representing the
+    #     fields to index.
     def mapping(*args)
       options = {
         :type => :string,
@@ -39,7 +39,7 @@ module ElasticMapper::Mapping
     # Return the _mapping instance variable, used to keep
     # track of a model's mapping definition. id is added
     # to the model by default, and is used to map the model
-    # back onto an ActivRecord object.
+    # back onto an ActiveModel object.
     # 
     # @return [Hash] the mapping description.
     def _mapping
@@ -51,7 +51,7 @@ module ElasticMapper::Mapping
     private :_mapping
 
     # Create a unique key name for the mapping.
-    # there are times where you might want to index
+    # there are times where you might want to index the
     # same field multiple time, e.g., analyzed, and not_analyzed.
     #
     # @param key [String] the original key name.
@@ -62,7 +62,7 @@ module ElasticMapper::Mapping
 
       while @_mapping.has_key?(mapping_key)
         counter += 1
-        mapping_key = "#{mapping_key}_#{counter}".to_sym
+        mapping_key = "#{key}_#{counter}".to_sym
       end
 
       return mapping_key
@@ -76,11 +76,11 @@ module ElasticMapper::Mapping
       @_mapping_name = mapping_name.to_sym
     end
 
-    # Generates a json representation of @_mapping,
+    # Generates a hash representation of @_mapping,
     # compatible with ElasticSearch.
     #
     # @return [Hash] mapping.
-    def mapping_json
+    def mapping_hash
       {
         @_mapping_name => {
           properties: @_mapping.inject({}) { |h, (k, v)| h[k] = v[:options]; h }
@@ -92,7 +92,9 @@ module ElasticMapper::Mapping
     def put_mapping
       ElasticMapper.index
         .type(@_mapping_name)
-        .put_mapping(mapping_json)
+        .put_mapping(mapping_hash)
+      
+      ElasticMapper.index.refresh
     end
   end
 
