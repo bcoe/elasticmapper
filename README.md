@@ -1,6 +1,12 @@
 # ElasticMapper
 
-A straightforward DSL for integrating ActiveModels with ElsticSearch
+A straightforward DSL for integrating ActiveModel with ElsticSearch
+
+## Usage
+
+```ruby
+def Search
+```
 
 ## Installation
 

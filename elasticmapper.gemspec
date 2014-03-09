@@ -1,15 +1,14 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'elasticmapper/version'
+require 'elastic_mapper/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "elasticmapper"
-  spec.version       = Elasticmapper::VERSION
+  spec.name          = "elastic_mapper"
+  spec.version       = ElasticMapper::VERSION
   spec.authors       = ["Benjamin Coe"]
   spec.email         = ["bencoe@gmail.com"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
+  spec.summary       = %q{A dead simple DSL for integrating ActiveModel with ElasticSearch.}
   spec.homepage      = ""
   spec.license       = "MIT"
 

@@ -6,4 +6,4 @@ end
 
 SimpleCov.minimum_coverage 95
 
-require_relative '../lib/elasticmapper'
+require_relative '../lib/elastic_mapper'
