@@ -1,11 +1,31 @@
-# ElasticMapper
+ElasticMapper
+=============
 
 A straightforward DSL for integrating ActiveModel with ElsticSearch
 
-## Usage
+Created Mappings
+----------------
+
+Mappings describe how the fields of a document should be indexed within the search engine:
+
+http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/mapping.html
+
+Use the `mapping` method to describe your mappings:
 
 ```ruby
-def Search
+def Article
+	include ElasticMapper
+
+	mapping :title, :doi, { type => :string, index => :not_analyzed }
+	mapping :title, :abstract, type => :string
+	mapping :publication_date, type => :date
+end
+```
+
+When you first create a set of mappings, or modify your mappings, run:
+
+```ruby
+Article.save_mapping
 ```
 
 ## Installation
