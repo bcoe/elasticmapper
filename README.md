@@ -104,10 +104,10 @@ articles = Article.search({ "query_string" => { "query" => 'alpha' } })
 results = SearchModel.search('* OR alpha', size: 10, from: 10)
 ```
 
-That's About It
----------------
+That's It
+---------
 
-That's about it, 
+Let me know what you think!
 
 ## Installation
 
