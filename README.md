@@ -43,7 +43,7 @@ When you first create or modify mappings on an ElasticMapper model, you should r
 Article.put_mapping
 ```
 
-Indexing A Document
+Indexing a Document
 -------------------
 
 When you create or update a document using the ElasticMapper mixin, simply call `index`.
