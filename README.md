@@ -1,12 +1,22 @@
 ElasticMapper
 =============
 
-A dead simple DSL for integrating ActiveRecord with ElasticSearch.
+A dead simple mixin for integrating ActiveModel with ElasticSearch.
 
 ElasticMapper is built on top of the [Stretcher](https://github.com/PoseBiz/stretcher) library.
 
 Background
 ----------
+
+I'm a big fan of the Stretcher gem, for interacting with ElasticSearch. It exposes an API that's: straightforward, elegant, and well documented. Given this, I tend to choose stretcher when pulling search into Rails projects.
+
+A few projects in, I noticed that I was rewriting a lot of the same code for:
+
+* describing the mappings on documents.
+* indexing documents.
+* and searching for documents.
+
+This motivated ElasticMapper. Include ElasticMapper as a mixin in your ActiveModels, it will in turn provide helpers for: generating mappings, indexing documents, and performing search.
 
 Describing Mappings
 ----------------
@@ -60,6 +70,9 @@ class Article < ActiveRecord::Base
   mapping :publication_date, :type => :date
 end
 ```
+
+Searching
+---------
 
 ## Installation
 
