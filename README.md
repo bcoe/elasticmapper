@@ -1,7 +1,7 @@
 ElasticMapper
 =============
 
-A dead simple mixin for integrating ActiveModel with ElasticSearch.
+A damn simple mixin for integrating ActiveModel with ElasticSearch.
 
 ElasticMapper is built on top of the [Stretcher](https://github.com/PoseBiz/stretcher) library.
 
@@ -16,10 +16,10 @@ A few projects in, I noticed that I was rewriting a lot of the same code for:
 * indexing documents.
 * and searching for documents.
 
-From this grew ElasticMapper. Simply include ElasticMapper as a mixin in your ActiveModels, it will in turn provide helpers for: generating mappings, indexing documents, and performing search.
+From this grew ElasticMapper; Simply include the ElasticMapper mixin in your ActiveModels, it provides helpers for: generating mappings, indexing documents, and performing search.
 
-Describing Mappings
-----------------
+Creating Mappings
+-----------------
 
 Mappings indicate to ElasticSearch how the fields of a document should be indexed:
 
@@ -31,13 +31,16 @@ ElasticMapper provides a `mapping` method, for describing these mappings.
 def Article
 	include ElasticMapper
 
+	# Note we might sometimes want to index the same field in a few
+	# different ways, ElasticMapper creates a unique name automatically
+	# if fields collide :title, :title_1, ...
 	mapping :title, :doi, { type => :string, index => :not_analyzed }
 	mapping :title, :abstract, type => :string
 	mapping :publication_date, type => :date
 end
 ```
 
-When you first create or modify mappings on an ElasticMapper model, you should run:
+When you create or modify mappings on an ElasticMapper model, you should run:
 
 ```ruby
 Article.put_mapping
@@ -73,6 +76,38 @@ end
 
 Searching
 ---------
+
+ElasticMapper adds the `search` method to your ActiveModel classes. Results will be returned as instances of your ActiveModel class.
+
+*String Queries*
+
+You can provide a string query to your model, and it will be parsed using the ElasticSearch query DSL:
+
+```ruby
+articles = Article.search('hello AND world')
+```
+
+*Hash Queries*
+
+You can also provide a hash object, for advanced searches.
+
+```ruby
+articles = Article.search({ "query_string" => { "query" => 'alpha' } })
+```
+
+*Pagination*
+
+* `:size` how many search results should be returned?
+* `:from` what offset should we start returning results from?
+
+```ruby
+results = SearchModel.search('* OR alpha', size: 10, from: 10)
+```
+
+That's About It
+---------------
+
+That's about it, 
 
 ## Installation
 

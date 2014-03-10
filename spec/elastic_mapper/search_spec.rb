@@ -76,7 +76,7 @@ describe ElasticMapper::Search do
       end
 
       it "allows documents to be skipped with from" do
-        results = SearchModel.search('* OR alpha', size: 1, from: 1)
+        results = SearchModel.search({ "query_string" => { "query" => '* OR alpha' } }, size: 1, from: 1)
         results.count.should == 1
         results.first.foo.should == 'hello world'
       end
