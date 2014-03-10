@@ -3,7 +3,7 @@ ElasticMapper
 
 A damn simple mixin for integrating ActiveModel with ElasticSearch.
 
-ElasticMapper is built on top of the [Stretcher](https://github.com/PoseBiz/stretcher) library.
+ElasticMapper is built on top of the [Stretcher](https://github.com/PoseBiz/stretcher) client.
 
 Background
 ----------
@@ -28,7 +28,7 @@ http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/mapping.ht
 ElasticMapper provides a `mapping` method, for describing these mappings.
 
 ```ruby
-def Article
+def Article < ActiveHash::Base
 	include ElasticMapper
 
 	# Note we might sometimes want to index the same field in a few
