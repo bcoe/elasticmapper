@@ -30,55 +30,57 @@ describe ElasticMapper::Search do
 
       it "returns documents matching a query string" do
         results = SearchModel.search('alpha')
-        results.count.should == 1
-        results.first.foo.should == 'alpha century'
+        results.documents.count.should == 1
+        results.documents.first.foo.should == 'alpha century'
       end
 
       it "supports elasticsearch query DSL" do
         results = SearchModel.search('*')
-        results.count.should == 3
+        results.documents.count.should == 3
       end
 
       it "handles escaping invalid search string" do
         results = SearchModel.search('AND AND mars')
-        results.count.should == 1
-        results.first.foo.should == 'alpha century'
+        results.documents.count.should == 1
+        results.documents.first.foo.should == 'alpha century'
       end
     end
 
     context "search by hash" do
       it "returns documents matching the hash query" do
         results = SearchModel.search({ "query_string" => { "query" => 'alpha' } })
-        results.count.should == 1
-        results.first.foo.should == 'alpha century'        
+        results.documents.count.should == 1
+        results.documents.first.foo.should == 'alpha century'        
       end
     end
 
     context "sort" do
       it "can sort in descending order" do
         results = SearchModel.search('*', sort: { :foo => :desc })
-        results.first.foo.should == 'hello world'
-        results.second.foo.should == 'cat lover'
+        results.documents.first.foo.should == 'hello world'
+        results.documents.second.foo.should == 'cat lover'
       end
 
       it "can sort in ascending order" do
         results = SearchModel.search('*', sort: { :foo => :asc })
-        results.first.foo.should == 'alpha century'
-        results.second.foo.should == 'cat lover'
+        results.documents.first.foo.should == 'alpha century'
+        results.documents.second.foo.should == 'cat lover'
       end
     end
 
     context "pagination" do
       it "allows result size to be set with size" do
         results = SearchModel.search('* OR alpha', size: 1)
-        results.count.should == 1
-        results.first.foo.should == 'alpha century'
+        results.documents.count.should == 1
+        results.documents.first.foo.should == 'alpha century'
       end
 
       it "allows documents to be skipped with from" do
         results = SearchModel.search({ "query_string" => { "query" => '* OR alpha' } }, size: 1, from: 1)
-        results.count.should == 1
-        results.first.foo.should == 'hello world'
+        results.total.should == 3
+        results.from.should == 1
+        results.documents.count.should == 1
+        results.documents.first.foo.should == 'hello world'
       end
     end
 
