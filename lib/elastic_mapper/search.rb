@@ -55,7 +55,11 @@ module ElasticMapper::Search
         end
       end
 
-      ordered_results(res.results.map(&:id))
+      Hashie::Mash.new({
+        documents: ordered_results(res.results.map(&:id)),
+        from: opts[:from],
+        total: res.total
+      })
     end
 
     # Create a query hash from a query string.
