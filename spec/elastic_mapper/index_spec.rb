@@ -26,7 +26,7 @@ describe ElasticMapper::Index do
 
   describe "index" do
 
-    before(:each) do 
+    before(:each) do
       reset_index
       IndexModel.put_mapping
       ElasticMapper.index.refresh
@@ -43,6 +43,26 @@ describe ElasticMapper::Index do
       results.count.should == 1
       results.first.foo.should == 'Benjamin'
       results.first.bar.should == 'Coe'
+    end
+  end
+
+  describe "delete_from_index" do
+    before(:each) do
+      reset_index
+      IndexModel.put_mapping
+      ElasticMapper.index.refresh
+    end
+    
+    it "removes the document from the search index" do
+      instance.index
+      ElasticMapper.index.refresh
+      instance.delete_from_index
+
+      results = ElasticMapper.index.type(:index_models)
+        .search({ size: 12, query: { "query_string" => {"query" => '*'} } })
+        .results
+
+      results.count.should == 1
     end
   end
 end

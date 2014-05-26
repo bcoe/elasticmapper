@@ -31,7 +31,7 @@ describe ElasticMapper::Mapping do
     end
 
     it "creates unique name for field in mapping, if a collision occurs" do
-      mapping.has_key?(:foo_2).should == true      
+      mapping.has_key?(:foo_2).should == true
     end
 
     it "populates mapping entry with default options, if none given" do
@@ -78,12 +78,10 @@ describe ElasticMapper::Mapping do
 
   describe "put_mapping" do
 
-    let(:expected_properties) do 
+    let(:expected_properties) do
       {
         "foo" => { "type" => "string" },
-        "foo_2" => { "type" => "string", "index" => "not_analyzed",
-            "norms" => { "enabled" => false}, "index_options" => "docs"
-        },
+        "foo_2" => { "type" => "string", "index" => "not_analyzed"},
         "bar" => { "type" => "string" },
         "id" => { "type" => "integer", "index" => "no" }
       }.stringify_keys
@@ -92,10 +90,11 @@ describe ElasticMapper::Mapping do
 
     it "creates the mapping in ElasticSearch" do
       Model.put_mapping
-      
+
       properties = ElasticMapper.index
         .get_mapping
         .elastic_mapper_tests
+        .mappings
         .models
         .properties
         .to_hash

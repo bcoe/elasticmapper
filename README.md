@@ -74,6 +74,20 @@ class Article < ActiveRecord::Base
 end
 ```
 
+Deleting a Document
+-------------------
+
+To remove a document from ElasticSearch, use the `delete_from_index` method.
+
+```ruby
+class Article < ActiveRecord::Base
+
+	include ElasticMapper
+
+	after_destroy :delete_from_index
+end
+```
+
 Searching
 ---------
 

@@ -9,6 +9,13 @@ module ElasticMapper::Index
     ElasticMapper.index.type(mapping_name).put(self.id, index_hash)
   end
 
+  # Remove the document from the ElasticSearch index.
+  def delete_from_index
+    mapping_name = self.class.instance_variable_get(:@_mapping_name)
+
+    ElasticMapper.index.type(mapping_name).delete(self.id)
+  end
+
   # Generate a hash representation of the model.
   #
   # @return [Hash] hash representation of model.
