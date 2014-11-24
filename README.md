@@ -118,6 +118,27 @@ articles = Article.search({ "query_string" => { "query" => 'alpha' } })
 results = SearchModel.search('* OR alpha', size: 10, from: 10)
 ```
 
+Searching Across Multiple Models
+--------------------------------
+
+Suppose you have two mappings in ElasticSearch, for instance an `article` and
+a `user`. There are times when you might want to search across both models
+at the same time.
+
+This can be facilitated with ElasticMapper's `MultiSearch` class:
+
+```ruby
+multi = ElasticMapper::MultiSearch.new({
+	index_models: SearchModel,
+	index_models_two: SearchModelTwo
+})
+
+results = multi.search('* OR alpha', size: 1)
+```
+
+* a multi-search instance accepts a hash into the constructor, which maps ElasticSearch mappings to model classes.
+* once you have a `MultiSearch` instance, search works the same as it does when using the ActiveModel mixin.
+
 That's It
 ---------
 
