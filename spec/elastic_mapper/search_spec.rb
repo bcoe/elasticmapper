@@ -15,7 +15,7 @@ describe ElasticMapper::Search do
   describe "search" do
     before(:each) do
       reset_index
-      IndexModel.put_mapping
+      SearchModel.put_mapping
     end
     let(:d1) { SearchModel.create(foo: 'hello world', bar: 'goodnight moon') }
     let(:d2) { SearchModel.create(foo: 'alpha century', bar: 'mars') }
@@ -50,7 +50,7 @@ describe ElasticMapper::Search do
       it "returns documents matching the hash query" do
         results = SearchModel.search({ "query_string" => { "query" => 'alpha' } })
         results.documents.count.should == 1
-        results.documents.first.foo.should == 'alpha century'        
+        results.documents.first.foo.should == 'alpha century'
       end
     end
 

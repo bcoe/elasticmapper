@@ -55,8 +55,24 @@ module ElasticMapper::Search
         end
       end
 
+      # if a search is being performed across multiple
+      # models, we must include the type along with id:
+      documents = if self.class.name =~ /MultiSearch/
+        ids = res.results.map do |obj|
+          {
+            id: "#{obj._type}_#{obj.id}",
+            obj_id: obj.id,
+            type: obj._type
+          }
+        end
+
+        ordered_results_multi(ids)
+      else
+        ordered_results(res.results.map(&:id))
+      end
+
       Hashie::Mash.new({
-        documents: ordered_results(res.results.map(&:id)),
+        documents: documents,
         from: opts[:from],
         total: res.total
       })
@@ -91,10 +107,19 @@ module ElasticMapper::Search
         h[m.id] = m
         h
       end
-      
+
       ids.map { |id| model_lookup[id] }
     end
     private :ordered_results
+
+    # Note: the multi-search functionality kicks along a
+    # type value which is used to perform lookups on the
+    # appropriate underlying model.
+    def ordered_results_multi(ids_hash)
+      model_lookup = self.find(ids_hash)
+      ids_hash.map { |id_hash| model_lookup[id_hash[:id]] }
+    end
+    private :ordered_results_multi
 
     # sanitize a search query for Lucene. Useful if the original
     # query raises an exception due to invalid DSL parse.

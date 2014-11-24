@@ -4,6 +4,7 @@ require "elastic_mapper/version"
 require "elastic_mapper/mapping"
 require "elastic_mapper/index"
 require "elastic_mapper/search"
+require "elastic_mapper/multi_search"
 
 module ElasticMapper
 
